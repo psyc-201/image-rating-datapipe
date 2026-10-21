@@ -78,10 +78,10 @@ push a change from GitHub Desktop, the website updates within a minute or two.
 
 1. Go to <https://pipe.jspsych.org> and create a free account.
 2. **Connect your storage.** Go to **Account Settings** → **Storage Providers**
-   and click **Connect** next to **Google Drive**. Sign in. A green
-   **Connected** label means it worked.
-   (DataPipe also supports Zenodo and Dataverse. It no longer creates new
-   experiments on OSF. Check with your PI about where your lab stores data.)
+   and click **Connect** next to **Google Drive**. Sign in with your
+   **UCSD Google account** (your `@ucsd.edu` address), not a personal Gmail,
+   so your data are protected by UCSD login. A green **Connected** label
+   means it worked.
 3. Click **New Experiment**, choose **Google Drive**, give it a title, and
    click **Create**. DataPipe makes a folder for it under `My Drive/DataPipe`.
 4. Your dashboard now shows an **experiment ID**: 12 letters and numbers.
