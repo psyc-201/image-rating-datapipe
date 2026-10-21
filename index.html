@@ -73,21 +73,18 @@
     // The timeline is the list of screens, in the order participants see them
     const timeline = [];
 
-    // The images we want rated. To use your own images, put them in the
-    // stimuli folder and change this list to match their file names.
-    const images = [
-      "stimuli/red_circle.png",
-      "stimuli/blue_square.png",
-      "stimuli/green_triangle.png",
-      "stimuli/orange_star.png",
-      "stimuli/purple_diamond.png",
-      "stimuli/teal_hexagon.png"
-    ];
-
-    // Screen 0: load all the images before starting, so none appear late
+    // Screen 0: load all the images before starting, so none appear late.
+    // If you add an image, add it here AND in test_stimuli below.
     const preload = {
       type: jsPsychPreload,
-      images: images
+      images: [
+        "stimuli/red_circle.png",
+        "stimuli/blue_square.png",
+        "stimuli/green_triangle.png",
+        "stimuli/orange_star.png",
+        "stimuli/purple_diamond.png",
+        "stimuli/teal_hexagon.png"
+      ]
     };
     timeline.push(preload);
 
@@ -104,7 +101,7 @@
     const instructions = {
       type: jsPsychHtmlButtonResponse,
       stimulus: `
-        <p>You will see ${images.length} images, one at a time.</p>
+        <p>You will see some images, one at a time.</p>
         <p>For each image, click a number to say how much you like it,
            from 1 (not at all) to 7 (very much).</p>
         <p>There are no right or wrong answers.</p>
@@ -114,11 +111,22 @@
     timeline.push(instructions);
 
     // Screens 3+: one rating screen per image.
-    // We write the rating screen once. jsPsych.timelineVariable("image")
-    // fills in a different image each time it repeats.
+    // The images we want rated. To use your own images, put them in the
+    // stimuli folder and change this list to match their file names.
+    const test_stimuli = [
+      { stimulus: "stimuli/red_circle.png" },
+      { stimulus: "stimuli/blue_square.png" },
+      { stimulus: "stimuli/green_triangle.png" },
+      { stimulus: "stimuli/orange_star.png" },
+      { stimulus: "stimuli/purple_diamond.png" },
+      { stimulus: "stimuli/teal_hexagon.png" }
+    ];
+
+    // We write the rating screen once. jsPsych.timelineVariable("stimulus")
+    // fills in a different image from test_stimuli each time it repeats.
     const rating_trial = {
       type: jsPsychImageButtonResponse,
-      stimulus: jsPsych.timelineVariable("image"),
+      stimulus: jsPsych.timelineVariable("stimulus"),
       stimulus_height: 300,
       choices: ["1", "2", "3", "4", "5", "6", "7"],
       prompt: "<p>How much do you like this image?<br>1 = not at all, 7 = very much</p>",
@@ -133,17 +141,10 @@
       }
     };
 
-    // Turn the list of image names into the format jsPsych expects:
-    // [{image: "stimuli/red_circle.png"}, {image: "stimuli/blue_square.png"}, ...]
-    const rating_list = [];
-    for (const image of images) {
-      rating_list.push({ image: image });
-    }
-
     // Repeat the rating screen once for each image, in a random order
     const all_ratings = {
       timeline: [rating_trial],
-      timeline_variables: rating_list,
+      timeline_variables: test_stimuli,
       randomize_order: true
     };
     timeline.push(all_ratings);

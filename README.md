@@ -19,6 +19,11 @@ When you are done you will have:
                           experiment                the experiment
 ```
 
+This picks up where the jsPsych Tutorial Sheets 0–2 leave off: same jsPsych
+pieces (a timeline, plugins, timeline variables, `data` and `on_finish`), plus
+the two things the tutorials do not cover: putting the experiment online and
+saving the data.
+
 - **jsPsych** is a JavaScript library for building experiments. All of our
   experiment code is in one file: `index.html`.
 - **GitHub Pages** turns your repository into a website, so participants can
@@ -76,14 +81,30 @@ push a change from GitHub Desktop, the website updates within a minute or two.
 
 ### 4a. Create the DataPipe experiment
 
-1. Go to <https://pipe.jspsych.org> and create a free account.
-2. **Connect your storage.** Go to **Account Settings** → **Storage Providers**
-   and click **Connect** next to **Google Drive**. Sign in with your
-   **UCSD Google account** (your `@ucsd.edu` address), not a personal Gmail,
-   so your data are protected by UCSD login. A green **Connected** label
-   means it worked.
+Use your **UCSD email** for everything in this part. Your data then live in
+your UCSD Google Drive, behind UCSD login.
+
+1. Go to <https://pipe.jspsych.org> and click **Sign up**. Make an account
+   with your `@ucsd.edu` email address and a new password. (This is a
+   DataPipe password, not your UCSD password.)
+2. **Connect your UCSD Google Drive.** Click **Account Settings** →
+   **Storage Providers**, then **Connect** next to **Google Drive**.
+   - Google's sign-in page opens. Type your `@ucsd.edu` address and click
+     **Next**.
+   - You are sent to the **UCSD single sign-on page**. Log in with your UCSD
+     username and password, and approve the Duo prompt, the same way you log
+     in to Canvas.
+   - **Check the account.** If Google is already signed in to a personal
+     Gmail, it may offer that one. Click **Use another account** and type
+     your `@ucsd.edu` address instead.
+   - Google asks whether to let DataPipe *see, edit, create, and delete only
+     the specific Google Drive files you use with this app*. Click
+     **Continue** / **Allow**. DataPipe can only touch the files it creates;
+     it cannot see anything else in your Drive.
+   - You land back on DataPipe. A green **Connected** label means it worked.
 3. Click **New Experiment**, choose **Google Drive**, give it a title, and
-   click **Create**. DataPipe makes a folder for it under `My Drive/DataPipe`.
+   click **Create**. DataPipe makes a folder for it in your UCSD Drive, under
+   `My Drive/DataPipe`.
 4. Your dashboard now shows an **experiment ID**: 12 letters and numbers.
    Copy it.
 
@@ -135,7 +156,7 @@ All of these are in `index.html`:
 
 | To change... | Edit... |
 |---|---|
-| The images | Put your images in `stimuli/` and update the `images` list |
+| The images | Put your images in `stimuli/`, then update both lists: `preload` and `test_stimuli` |
 | The question | The `prompt` in `rating_trial` |
 | The scale (e.g., 1–5) | The `choices` in `rating_trial`, and the instructions text |
 | Image size | `stimulus_height` in `rating_trial` |
@@ -177,6 +198,13 @@ image-rating-datapipe/
 - **My github.io link shows the old version.** Wait two minutes and reload. Check
   that you pushed (GitHub Desktop says *No local changes* and has no
   **Push origin** button).
+- **Google says "Access blocked" or "This app is blocked" when I connect
+  Drive.** UCSD's Google settings are refusing DataPipe for your account. Do
+  not switch to a personal Gmail; tell your TA or Bria.
+- **My files went to the wrong Google account.** In DataPipe, go to
+  **Account Settings** → **Storage Providers**, click **Disconnect**, then
+  **Connect** again and pick your `@ucsd.edu` account. Then create a new
+  DataPipe experiment, and paste its new ID into `index.html`.
 - **"Your data could not be saved."** Check that **Accept new data** is on, that
   `DATAPIPE_ID` matches your dashboard exactly, and that you have not hit your
   session limit.
