@@ -1,0 +1,17 @@
+# Real participant data -- never commit this to a public repository.
+# Download your DataPipe files into data/raw/ and they stay on your laptop.
+data/raw/
+
+# R session junk
+.Rhistory
+.RData
+.Rproj.user/
+
+# Quarto build output
+/.quarto/
+analysis/analyze-ratings.html
+analysis/analyze-ratings_files/
+
+# Operating system junk
+.DS_Store
+Thumbs.db

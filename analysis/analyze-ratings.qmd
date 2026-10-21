@@ -1,0 +1,108 @@
+---
+title: "Image ratings"
+author: "Your name here"
+date: today
+format: html
+---
+
+::: {.callout-note}
+## Goals
+
+1. Read in every participant's data file at once
+2. Keep only the rating trials
+3. Find the average rating for each image, and plot it
+:::
+
+DataPipe saves **one CSV file per participant**. This document reads all of
+them, stacks them into one table, and summarizes the ratings.
+
+## (1) Load packages
+
+Run this once, by hand, if you have never installed these.
+
+```{r}
+#| eval: false
+install.packages(c("tidyverse", "here"))
+```
+
+```{r}
+#| message: false
+library(tidyverse)
+library(here)
+```
+
+## (2) Read in all the data files
+
+The files in `data/example/` came from three practice runs of the experiment.
+Once you have real data, download the files from your DataPipe storage
+(e.g., your Google Drive folder) into `data/raw/`, and change `"example"` to
+`"raw"` below.
+
+```{r}
+data_folder <- here("data", "example")
+
+# Make a list of every .csv file in that folder
+files <- list.files(data_folder, pattern = "\\.csv$", full.names = TRUE)
+files
+```
+
+`read_csv()` can read a whole list of files and stack them into one table.
+
+```{r}
+all_data <- read_csv(files, show_col_types = FALSE)
+
+glimpse(all_data)
+```
+
+Each participant contributes several rows: one for each screen they saw
+(welcome, instructions, each image, goodbye).
+
+## (3) Keep only the rating trials
+
+We gave every rating screen `task = "rating"` in `index.html`, so we can
+filter on it. We also shorten the image name from
+`stimuli/red_circle.png` to `red_circle`.
+
+```{r}
+ratings <- all_data |>
+  filter(task == "rating") |>
+  mutate(image = str_remove(basename(stimulus), "\\.png$")) |>
+  select(participant_id, image, rating, rt)
+
+ratings
+```
+
+Quick checks: how many participants, and did everyone rate every image?
+
+```{r}
+ratings |>
+  count(participant_id)
+```
+
+## (4) Average rating per image
+
+```{r}
+image_means <- ratings |>
+  group_by(image) |>
+  summarise(
+    mean_rating = mean(rating),
+    n = n()
+  )
+
+image_means
+```
+
+```{r}
+ggplot(ratings, aes(x = image, y = rating)) +
+  geom_jitter(width = 0.1, height = 0, alpha = 0.5) +
+  geom_point(data = image_means, aes(y = mean_rating), color = "red", size = 4) +
+  scale_y_continuous(limits = c(1, 7), breaks = 1:7) +
+  labs(
+    x = "Image",
+    y = "Rating (1 = not at all, 7 = very much)",
+    title = "Black dots = individual ratings; red dots = averages"
+  ) +
+  theme_minimal()
+```
+
+The example data are random clicks, so do not read anything into the pattern.

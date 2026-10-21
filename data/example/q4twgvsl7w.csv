@@ -1,0 +1,16 @@
+"success","timeout","failed_images","failed_audio","failed_video","trial_type","trial_index","plugin_version","time_elapsed","participant_id","rt","stimulus","response","task","rating"
+"true","false","[]","[]","[]","preload","0","2.1.0","8","q4twgvsl7w","","","","",""
+"","","","","","html-button-response","1","2.1.0","42","q4twgvsl7w","34","<p>Welcome to the experiment!</p>","0","",""
+"","","","","","html-button-response","2","2.1.0","68","q4twgvsl7w","26","
+        <p>You will see 6 images, one at a time.</p>
+        <p>For each image, click a number to say how much you like it,
+           from 1 (not at all) to 7 (very much).</p>
+        <p>There are no right or wrong answers.</p>
+      ","0","",""
+"","","","","","image-button-response","3","2.1.0","92","q4twgvsl7w","22","stimuli/purple_diamond.png","5","rating","6"
+"","","","","","image-button-response","4","2.1.0","115","q4twgvsl7w","23","stimuli/orange_star.png","3","rating","4"
+"","","","","","image-button-response","5","2.1.0","140","q4twgvsl7w","24","stimuli/green_triangle.png","6","rating","7"
+"","","","","","image-button-response","6","2.1.0","156","q4twgvsl7w","16","stimuli/red_circle.png","1","rating","2"
+"","","","","","image-button-response","7","2.1.0","173","q4twgvsl7w","16","stimuli/blue_square.png","0","rating","1"
+"","","","","","image-button-response","8","2.1.0","190","q4twgvsl7w","17","stimuli/teal_hexagon.png","3","rating","4"
+"","","","","","html-button-response","9","2.1.0","206","q4twgvsl7w","15","<p>All done. Thank you for participating!</p>","0","",""

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Image rating experiment</title>
+
+    <!-- Load jsPsych, the plugins we use, and the DataPipe extension.
+         The numbers (like @8.2.2) are version numbers. Keep them fixed so
+         your experiment does not change if jsPsych releases an update. -->
+    <script src="https://unpkg.com/jspsych@8.2.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-image-button-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/extension-pipe@0.2.0"></script>
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+
+    /* ------------------------------------------------------------
+       SETTINGS: the only two lines you need to change to collect data
+       ------------------------------------------------------------ */
+
+    // Your experiment ID from the DataPipe dashboard (pipe.jspsych.org).
+    // It is 12 characters long. Keep the quotation marks.
+    const DATAPIPE_ID = "PASTE_YOUR_ID_HERE";
+
+    // false = testing. Nothing is saved; your data appear on screen at the end.
+    // true  = real data collection. Data are sent to DataPipe.
+    const SAVE_DATA = false;
+
+
+    /* ------------------------------------------------------------
+       Set up jsPsych and the DataPipe extension
+       ------------------------------------------------------------ */
+
+    const jsPsych = initJsPsych({
+      // When the experiment ends and we are testing, show the data on screen
+      on_finish: function() {
+        if (SAVE_DATA == false) {
+          jsPsych.data.displayData("csv");
+        }
+      },
+      // The DataPipe extension sends the data to DataPipe automatically,
+      // after every trial. You do not need a separate "save data" trial.
+      extensions: [
+        {
+          type: jsPsychExtensionPipe,
+          params: {
+            experiment_id: DATAPIPE_ID,
+            filename: function() { return participant_id + ".csv"; },
+            enabled: SAVE_DATA,
+            // If saving fails, say so on screen instead of "Done"
+            on_save: function(result) {
+              if (result.ok == false) {
+                document.body.innerHTML = "<p>Your data could not be saved. Please contact the researcher.</p>";
+              }
+            }
+          }
+        }
+      ]
+    });
+
+    // Give each participant a random 10-character ID, and add it to every
+    // row of their data. Their data file will be named after this ID.
+    const participant_id = jsPsych.randomization.randomID(10);
+    jsPsych.data.addProperties({ participant_id: participant_id });
+
+
+    /* ------------------------------------------------------------
+       The experiment, one screen at a time
+       ------------------------------------------------------------ */
+
+    // The timeline is the list of screens, in the order participants see them
+    const timeline = [];
+
+    // The images we want rated. To use your own images, put them in the
+    // stimuli folder and change this list to match their file names.
+    const images = [
+      "stimuli/red_circle.png",
+      "stimuli/blue_square.png",
+      "stimuli/green_triangle.png",
+      "stimuli/orange_star.png",
+      "stimuli/purple_diamond.png",
+      "stimuli/teal_hexagon.png"
+    ];
+
+    // Screen 0: load all the images before starting, so none appear late
+    const preload = {
+      type: jsPsychPreload,
+      images: images
+    };
+    timeline.push(preload);
+
+    // Screen 1: welcome
+    // (A real study would put its consent form here.)
+    const welcome = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: "<p>Welcome to the experiment!</p>",
+      choices: ["Continue"]
+    };
+    timeline.push(welcome);
+
+    // Screen 2: instructions
+    const instructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `
+        <p>You will see ${images.length} images, one at a time.</p>
+        <p>For each image, click a number to say how much you like it,
+           from 1 (not at all) to 7 (very much).</p>
+        <p>There are no right or wrong answers.</p>
+      `,
+      choices: ["Start"]
+    };
+    timeline.push(instructions);
+
+    // Screens 3+: one rating screen per image.
+    // We write the rating screen once. jsPsych.timelineVariable("image")
+    // fills in a different image each time it repeats.
+    const rating_trial = {
+      type: jsPsychImageButtonResponse,
+      stimulus: jsPsych.timelineVariable("image"),
+      stimulus_height: 300,
+      choices: ["1", "2", "3", "4", "5", "6", "7"],
+      prompt: "<p>How much do you like this image?<br>1 = not at all, 7 = very much</p>",
+      data: {
+        task: "rating"
+      },
+      on_finish: function(data) {
+        // jsPsych records which button was clicked, counting from 0
+        // (the first button is 0, the second is 1, ...).
+        // Add 1 so the rating matches the number on the button.
+        data.rating = data.response + 1;
+      }
+    };
+
+    // Turn the list of image names into the format jsPsych expects:
+    // [{image: "stimuli/red_circle.png"}, {image: "stimuli/blue_square.png"}, ...]
+    const rating_list = [];
+    for (const image of images) {
+      rating_list.push({ image: image });
+    }
+
+    // Repeat the rating screen once for each image, in a random order
+    const all_ratings = {
+      timeline: [rating_trial],
+      timeline_variables: rating_list,
+      randomize_order: true
+    };
+    timeline.push(all_ratings);
+
+    // Last screen: thank you
+    const goodbye = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: "<p>All done. Thank you for participating!</p>",
+      choices: ["Finish"]
+    };
+    timeline.push(goodbye);
+
+
+    /* ------------------------------------------------------------
+       Start the experiment
+       ------------------------------------------------------------ */
+    jsPsych.run(timeline);
+
+  </script>
+</html>
