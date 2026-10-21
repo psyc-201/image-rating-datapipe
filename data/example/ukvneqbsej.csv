@@ -1,0 +1,20 @@
+"success","timeout","failed_images","failed_audio","failed_video","trial_type","trial_index","plugin_version","time_elapsed","rt","stimulus","response","task","animal","slider_start"
+"true","false","[]","[]","[]","preload","0","2.0.0","32","","","","","",""
+"","","","","","html-keyboard-response","1","2.0.0","57","24","Welcome to the experiment. Press any key to begin.","a","","",""
+"","","","","","html-keyboard-response","2","2.0.0","65","8","
+      <p>In this experiment, you will see pictures of animals.</p>
+      <p>Use the slider to say how <strong>typical</strong> each animal is.</p>
+      <p>Press any key to begin.</p>
+    ","a","","",""
+"","","","","","image-slider-response","3","2.0.0","101","34","stimuli/flamingo.jpg","30","rating","flamingo","50"
+"","","","","","image-slider-response","4","2.0.0","138","37","stimuli/snake.jpg","75","rating","snake","50"
+"","","","","","image-slider-response","5","2.0.0","164","25","stimuli/rabbit.jpg","69","rating","rabbit","50"
+"","","","","","image-slider-response","6","2.0.0","189","25","stimuli/butterfly.jpg","16","rating","butterfly","50"
+"","","","","","image-slider-response","7","2.0.0","214","24","stimuli/giraffe.jpg","47","rating","giraffe","50"
+"","","","","","image-slider-response","8","2.0.0","238","24","stimuli/dog.jpg","77","rating","dog","50"
+"","","","","","image-slider-response","9","2.0.0","263","25","stimuli/horse.jpg","60","rating","horse","50"
+"","","","","","image-slider-response","10","2.0.0","288","24","stimuli/octopus.jpg","80","rating","octopus","50"
+"","","","","","image-slider-response","11","2.0.0","313","25","stimuli/dolphin.jpg","74","rating","dolphin","50"
+"","","","","","image-slider-response","12","2.0.0","339","26","stimuli/jellyfish.jpg","8","rating","jellyfish","50"
+"","","","","","image-slider-response","13","2.0.0","363","24","stimuli/bear.jpg","77","rating","bear","50"
+"","","","","","image-slider-response","14","2.0.0","397","34","stimuli/penguin.jpg","1","rating","penguin","50"

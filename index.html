@@ -1,167 +1,117 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Image rating experiment</title>
 
-    <!-- Load jsPsych, the plugins we use, and the DataPipe extension.
-         The numbers (like @8.2.2) are version numbers. Keep them fixed so
-         your experiment does not change if jsPsych releases an update. -->
-    <script src="https://unpkg.com/jspsych@8.2.2"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-image-button-response@2.1.0"></script>
-    <script src="https://unpkg.com/@jspsych/extension-pipe@0.2.0"></script>
-    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
-  </head>
-  <body></body>
-  <script>
+<head>
+  <title>animal typicality experiment</title>
+  <script src="https://unpkg.com/jspsych@8.0.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.0.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-image-slider-response@2.0.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-preload@2.0.0"></script>
+  <!-- NEW: the DataPipe extension, which saves our data -->
+  <script src="https://unpkg.com/@jspsych/extension-pipe@0.2.0"></script>
+  <link href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+</head>
 
-    /* ------------------------------------------------------------
-       SETTINGS: the only two lines you need to change to collect data
-       ------------------------------------------------------------ */
+<body></body>
+<script>
 
-    // Your experiment ID from the DataPipe dashboard (pipe.jspsych.org).
-    // It is 12 characters long. Keep the quotation marks.
-    const DATAPIPE_ID = "PASTE_YOUR_ID_HERE";
-
-    // false = testing. Nothing is saved; your data appear on screen at the end.
-    // true  = real data collection. Data are sent to DataPipe.
-    const SAVE_DATA = false;
-
-
-    /* ------------------------------------------------------------
-       Set up jsPsych and the DataPipe extension
-       ------------------------------------------------------------ */
-
-    const jsPsych = initJsPsych({
-      // When the experiment ends and we are testing, show the data on screen
-      on_finish: function() {
-        if (SAVE_DATA == false) {
-          jsPsych.data.displayData("csv");
-        }
-      },
-      // The DataPipe extension sends the data to DataPipe automatically,
-      // after every trial. You do not need a separate "save data" trial.
-      extensions: [
-        {
-          type: jsPsychExtensionPipe,
-          params: {
-            experiment_id: DATAPIPE_ID,
-            filename: function() { return participant_id + ".csv"; },
-            enabled: SAVE_DATA,
-            // If saving fails, say so on screen instead of "Done"
-            on_save: function(result) {
-              if (result.ok == false) {
-                document.body.innerHTML = "<p>Your data could not be saved. Please contact the researcher.</p>";
-              }
-            }
+  // initialize jsPsych
+  var jsPsych = initJsPsych({
+    on_finish: function () {
+      jsPsych.data.displayData();
+    },
+    // NEW: send the data to DataPipe. Paste your experiment ID between the quotes.
+    extensions: [
+      {
+        type: jsPsychExtensionPipe,
+        params: {
+          experiment_id: "PASTE_YOUR_ID_HERE",
+          filename: function () {
+            return subject_id + ".csv";
           }
         }
-      ]
-    });
-
-    // Give each participant a random 10-character ID, and add it to every
-    // row of their data. Their data file will be named after this ID.
-    const participant_id = jsPsych.randomization.randomID(10);
-    jsPsych.data.addProperties({ participant_id: participant_id });
-
-
-    /* ------------------------------------------------------------
-       The experiment, one screen at a time
-       ------------------------------------------------------------ */
-
-    // The timeline is the list of screens, in the order participants see them
-    const timeline = [];
-
-    // Screen 0: load all the images before starting, so none appear late.
-    // If you add an image, add it here AND in test_stimuli below.
-    const preload = {
-      type: jsPsychPreload,
-      images: [
-        "stimuli/red_circle.png",
-        "stimuli/blue_square.png",
-        "stimuli/green_triangle.png",
-        "stimuli/orange_star.png",
-        "stimuli/purple_diamond.png",
-        "stimuli/teal_hexagon.png"
-      ]
-    };
-    timeline.push(preload);
-
-    // Screen 1: welcome
-    // (A real study would put its consent form here.)
-    const welcome = {
-      type: jsPsychHtmlButtonResponse,
-      stimulus: "<p>Welcome to the experiment!</p>",
-      choices: ["Continue"]
-    };
-    timeline.push(welcome);
-
-    // Screen 2: instructions
-    const instructions = {
-      type: jsPsychHtmlButtonResponse,
-      stimulus: `
-        <p>You will see some images, one at a time.</p>
-        <p>For each image, click a number to say how much you like it,
-           from 1 (not at all) to 7 (very much).</p>
-        <p>There are no right or wrong answers.</p>
-      `,
-      choices: ["Start"]
-    };
-    timeline.push(instructions);
-
-    // Screens 3+: one rating screen per image.
-    // The images we want rated. To use your own images, put them in the
-    // stimuli folder and change this list to match their file names.
-    const test_stimuli = [
-      { stimulus: "stimuli/red_circle.png" },
-      { stimulus: "stimuli/blue_square.png" },
-      { stimulus: "stimuli/green_triangle.png" },
-      { stimulus: "stimuli/orange_star.png" },
-      { stimulus: "stimuli/purple_diamond.png" },
-      { stimulus: "stimuli/teal_hexagon.png" }
-    ];
-
-    // We write the rating screen once. jsPsych.timelineVariable("stimulus")
-    // fills in a different image from test_stimuli each time it repeats.
-    const rating_trial = {
-      type: jsPsychImageButtonResponse,
-      stimulus: jsPsych.timelineVariable("stimulus"),
-      stimulus_height: 300,
-      choices: ["1", "2", "3", "4", "5", "6", "7"],
-      prompt: "<p>How much do you like this image?<br>1 = not at all, 7 = very much</p>",
-      data: {
-        task: "rating"
-      },
-      on_finish: function(data) {
-        // jsPsych records which button was clicked, counting from 0
-        // (the first button is 0, the second is 1, ...).
-        // Add 1 so the rating matches the number on the button.
-        data.rating = data.response + 1;
       }
-    };
+    ]
+  });
 
-    // Repeat the rating screen once for each image, in a random order
-    const all_ratings = {
-      timeline: [rating_trial],
-      timeline_variables: test_stimuli,
-      randomize_order: true
-    };
-    timeline.push(all_ratings);
+  // NEW: give each participant a random ID. Their data file is named after it.
+  var subject_id = jsPsych.randomization.randomID(10);
 
-    // Last screen: thank you
-    const goodbye = {
-      type: jsPsychHtmlButtonResponse,
-      stimulus: "<p>All done. Thank you for participating!</p>",
-      choices: ["Finish"]
-    };
-    timeline.push(goodbye);
+  // create timeline
+  var timeline = [];
 
+  // preload images
+  var preload = {
+    type: jsPsychPreload,
+    images: [
+      'stimuli/dog.jpg', 'stimuli/horse.jpg', 'stimuli/bear.jpg',
+      'stimuli/rabbit.jpg', 'stimuli/giraffe.jpg', 'stimuli/penguin.jpg',
+      'stimuli/dolphin.jpg', 'stimuli/snake.jpg', 'stimuli/flamingo.jpg',
+      'stimuli/octopus.jpg', 'stimuli/butterfly.jpg', 'stimuli/jellyfish.jpg'
+    ]
+  };
+  timeline.push(preload);
 
-    /* ------------------------------------------------------------
-       Start the experiment
-       ------------------------------------------------------------ */
-    jsPsych.run(timeline);
+  // define welcome message trial
+  var welcome = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: "Welcome to the experiment. Press any key to begin."
+  };
+  timeline.push(welcome);
 
-  </script>
+  // define the instructions trial
+  var instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <p>In this experiment, you will see pictures of animals.</p>
+      <p>Use the slider to say how <strong>typical</strong> each animal is.</p>
+      <p>Press any key to begin.</p>
+    `
+  };
+  timeline.push(instructions);
+
+  // create the test stimuli we will use to set the timeline variable
+  var test_stimuli = [
+    { stimulus: 'stimuli/dog.jpg', animal: 'dog' },
+    { stimulus: 'stimuli/horse.jpg', animal: 'horse' },
+    { stimulus: 'stimuli/bear.jpg', animal: 'bear' },
+    { stimulus: 'stimuli/rabbit.jpg', animal: 'rabbit' },
+    { stimulus: 'stimuli/giraffe.jpg', animal: 'giraffe' },
+    { stimulus: 'stimuli/penguin.jpg', animal: 'penguin' },
+    { stimulus: 'stimuli/dolphin.jpg', animal: 'dolphin' },
+    { stimulus: 'stimuli/snake.jpg', animal: 'snake' },
+    { stimulus: 'stimuli/flamingo.jpg', animal: 'flamingo' },
+    { stimulus: 'stimuli/octopus.jpg', animal: 'octopus' },
+    { stimulus: 'stimuli/butterfly.jpg', animal: 'butterfly' },
+    { stimulus: 'stimuli/jellyfish.jpg', animal: 'jellyfish' }
+  ];
+
+  // create the rating trial, with a stimulus timeline variable
+  // the slider goes from 0 to 100; the rating is saved in the "response" column
+  var rating = {
+    type: jsPsychImageSliderResponse,
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    stimulus_height: 300,
+    prompt: "<p>How typical is this animal?</p>",
+    labels: ['Not at all typical', 'Very typical'],
+    require_movement: true,
+    data: {
+      task: "rating",
+      animal: jsPsych.timelineVariable('animal')
+    }
+  };
+
+  // create a test procedure that shows every animal once, in a random order
+  var test_procedure = {
+    timeline: [rating],
+    timeline_variables: test_stimuli,
+    randomize_order: true
+  };
+  timeline.push(test_procedure);
+
+  // start the experiment
+  jsPsych.run(timeline);
+
+</script>
+
 </html>
